@@ -15,13 +15,13 @@ namespace Module
 		static Manager* mManager;
 
 	public:
-		virtual void load() {};
-		virtual void initialize() {};
-		virtual void resize() {};
-		virtual void pause() {};
-		virtual void resume() {};
-		virtual void handleEvents(ALLEGRO_EVENT &ev) {};
-		virtual void render() {};
-		virtual void cleanup() {};
+		virtual void Load() {};
+		virtual void Initialize() {};
+		virtual void Resize() {};
+		virtual void Pause() {};
+		virtual void Resume() {};
+		virtual void HandleEvents(ALLEGRO_EVENT &ev) {};
+		virtual void Render() {};
+		virtual void Cleanup() {};
 	};
 };

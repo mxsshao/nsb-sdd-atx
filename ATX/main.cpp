@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 	int iFrames = 0;
 	int iGameFPS = 0;
 
-	Manager* mManager = Manager::getInstance();
+	Manager* mManager = Manager::GetInstance();
 	mManager->bDone = false;
 
 	//ALLEGRO INIT
@@ -59,4 +59,51 @@ int main(int argc, char **argv)
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
+	mManager->InitializeGwen();
+	std::cout << "LIBRARY INIT	-Gwen GUI" << std::endl;
+
+	//EVENT INIT
+	mManager->aEventQueue = al_create_event_queue();
+	aTimer = al_create_timer(1.0 / 60);
+
+	//EVENT SOURCE
+	al_register_event_source(mManager->aEventQueue, al_get_timer_event_source(aTimer));
+	al_register_event_source(mManager->aEventQueue, al_get_display_event_source(mManager->aDisplay));
+	al_register_event_source(mManager->aEventQueue, al_get_keyboard_event_source());
+	al_register_event_source(mManager->aEventQueue, al_get_mouse_event_source());
+
+	al_start_timer(aTimer);
+
+	//EVENT LOOP
+	while (!mManager->bDone)
+	{
+		ALLEGRO_EVENT ev;
+		al_wait_for_event(mManager->aEventQueue, &ev);
+
+		mManager->HandleEvents(ev);
+
+		if (al_is_event_queue_empty(mManager->aEventQueue))
+		{
+			mManager->Render();
+
+			iFrames ++;
+			if(al_current_time() - fGameTime >= 1)
+			{
+				fGameTime = al_current_time();
+				iGameFPS = iFrames;
+				iFrames = 0;
+			}
+
+			al_draw_textf(aFont, al_map_rgb(255, 255, 0), 10, 680, 0, "FPS: %i", iGameFPS);
+
+			al_flip_display();
+			al_clear_to_color(al_map_rgb(0, 124, 150));
+		}
+	}
+
+	al_stop_timer(aTimer);
+	al_destroy_timer(aTimer);
+	al_destroy_font(aFont);
+	mManager->Cleanup();
+	return 0;
 }

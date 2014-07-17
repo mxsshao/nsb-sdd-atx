@@ -63,6 +63,12 @@
       <AdditionalLibraryDirectories>C:\SDD-LIB\tinyxml2\tinyxml2\bin\Win32-Debug-Dll;C:\SDD-LIB\gwen\lib;C:\SDD-LIB\allegro\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>C:\SDD-LIB\tinyxml2\tinyxml2\bin\Win32-Debug-Dll\tinyxml2.lib;C:\SDD-LIB\gwen\lib\windows\vs2010\GWEND-Renderer-Allegrod.lib;C:\SDD-LIB\gwen\lib\windows\vs2010\gwen_staticd.lib;allegro-5.1.7-monolith-md-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>"$(SolutionDir).git\version.sh"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>VERSION</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
