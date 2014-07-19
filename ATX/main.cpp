@@ -1,5 +1,6 @@
 #include "global.h"
 #include "manager.h"
+#include "module_simulator_main.h"
 
 int main(int argc, char **argv)
 {
@@ -73,6 +74,8 @@ int main(int argc, char **argv)
 	al_register_event_source(mManager->aEventQueue, al_get_mouse_event_source());
 
 	al_start_timer(aTimer);
+
+	mManager->ChangeModule(new Module::Simulator::Main());
 
 	//EVENT LOOP
 	while (!mManager->bDone)

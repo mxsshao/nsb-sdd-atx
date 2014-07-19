@@ -8,13 +8,10 @@ namespace Module
 {
 	class Base : public Gwen::Event::Handler
 	{
-	protected:
+	public:
 		Base() {};
 
-	private:
 		static Manager* mManager;
-
-	public:
 		virtual void Load() {};
 		virtual void Initialize() {};
 		virtual void Resize() {};

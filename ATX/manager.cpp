@@ -22,10 +22,54 @@ void Manager::InitializeGwen()
 	gInput->Initialize(gCanvas);
 }
 
+void Manager::ChangeModule(Module::Base* pModule)
+{
+	if (!nModules.empty())
+	{
+		nModules.back()->Cleanup();
+		delete nModules.back();
+		nModules.pop_back();
+	}
+
+	nModules.push_back(pModule);
+	nModules.back()->Load();
+	nModules.back()->Initialize();
+
+	al_flush_event_queue(aEventQueue);
+}
+
 void Manager::HandleEvents(ALLEGRO_EVENT &ev)
 {
 	gCanvas->ProcessDelayedDeletes();
 	gInput->ProcessMessage(ev);
+
+	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+	{
+		bDone = true;
+	}
+	else if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
+	{
+		al_resize_display(ev.display.source, ev.display.width, ev.display.height);
+		gCanvas->SetSize(ev.display.width, ev.display.height);
+		gBase->SetSize(ev.display.width, ev.display.height);
+		if(!nModules.empty())
+		{
+			nModules.back()->Resize();
+		}
+		std::cout << "DISPLAY RESIZE	-w" << al_get_display_width(aDisplay) << " -h" << al_get_display_height(aDisplay) << std::endl;
+	}
+	else
+	{
+		if(!nModules.empty())
+		{
+			nModules.back()->HandleEvents(ev);
+		}
+	}
+}
+
+void Manager::Render()
+{
+	nModules.back()->Render();
 }
 
 void Manager::Cleanup()

@@ -37,3 +37,20 @@
 #include <random>
 #include <sys/stat.h>
 #include <math.h>
+
+namespace Module
+{
+namespace Simulator
+{
+	namespace Structs
+	{
+		struct Camera
+		{
+			Camera() {fX = 0.0f; fY = 0.0f; fZ = 0.0f;};
+			float fX;
+			float fY;
+			float fZ;
+		};
+	};
+};
+};

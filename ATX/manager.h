@@ -6,7 +6,7 @@
 class Manager
 {
 protected:
-	Manager() {};
+	Manager() {Module::Base::mManager = this;};
 
 private:
 	static Manager mManager;
@@ -26,7 +26,8 @@ public:
 	Gwen::Controls::Base* gBase;
 
 	void InitializeGwen();
+	void ChangeModule(Module::Base* pModule);
 	void HandleEvents(ALLEGRO_EVENT &ev);
-	void Render() {};
+	void Render();
 	void Cleanup();
 };
