@@ -91,6 +91,7 @@
     <ClInclude Include="global.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="module_base.h" />
+    <ClInclude Include="module_simulator_aircraft.h" />
     <ClInclude Include="module_simulator_background.h" />
     <ClInclude Include="module_simulator_main.h" />
   </ItemGroup>
@@ -99,6 +100,7 @@
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="modules_simulator_background.cpp" />
     <ClCompile Include="module_base.cpp" />
+    <ClCompile Include="module_simulator_aircraft.cpp" />
     <ClCompile Include="module_simulator_main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

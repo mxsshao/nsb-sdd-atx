@@ -10,12 +10,35 @@ Main::Main()
 void Main::Load()
 {
 	mBackground->Load();
+	Aircraft::Load(this);
+
+	nWaypoints[0] = Structs::Waypoint(100,100,0);
+	nWaypoints[1] = Structs::Waypoint(200,200,0);
+	nWaypoints[2] = Structs::Waypoint(300,300,0);
+	nWaypoints[3] = Structs::Waypoint(1000,600,0);
+	nWaypoints[4] = Structs::Waypoint(1000,300,0);
+
+	nWaypoints[0].nConnected.push_back(1);
+	//nWaypoints[0].nConnected.push_back(4);
+	nWaypoints[1].nConnected.push_back(0);
+	//nWaypoints[1].nConnected.push_back(4);
+	nWaypoints[1].nConnected.push_back(2);
+	nWaypoints[2].nConnected.push_back(1);
+	nWaypoints[2].nConnected.push_back(3);
+	nWaypoints[2].nConnected.push_back(4);
+	nWaypoints[3].nConnected.push_back(2);
+	nWaypoints[3].nConnected.push_back(4);
+	//nWaypoints[4].nConnected.push_back(0);
+	//nWaypoints[4].nConnected.push_back(1);
+	nWaypoints[4].nConnected.push_back(2);
+	nWaypoints[4].nConnected.push_back(3);
 }
 
 void Main::Initialize()
 {
 	std::cout << "MODULE		-Simulation" << std::endl;
 
+	nAircraft.push_back(new Aircraft(0, 0, 0, 0, 0.4f, 120.0f, 4, "TG3802"));
 	bRightClick = false;
 
 	Resize();
@@ -37,11 +60,12 @@ void Main::HandleEvents(ALLEGRO_EVENT &ev)
 {
 	if (ev.type == ALLEGRO_EVENT_TIMER)
 	{
-		al_identity_transform(&aTransform);
+		Update();
+		/*al_identity_transform(&aTransform);
 		al_scale_transform(&aTransform, 1.0f / (sCamera.fZ + 1.0f), 1.0f / (sCamera.fZ + 1.0f));
 		al_translate_transform(&aTransform, iOffsetW - sCamera.fX / (sCamera.fZ + 1.0f), iOffsetH - sCamera.fY / (sCamera.fZ + 1.0f));
 
-		mBackground->Update(iDisplayW, iDisplayH, iOffsetW, iOffsetH, &sCamera);
+		mBackground->Update(iDisplayW, iDisplayH, iOffsetW, iOffsetH, &sCamera);*/
 		//update();
 		//std::cout << label->Height() << std::endl;
 		//std::cout << label->m_Text->Height() << std::endl;
@@ -125,6 +149,103 @@ void Main::HandleEvents(ALLEGRO_EVENT &ev)
 		}
 	}
 }
+
+void Main::Update()
+{
+	//AIRCRAFT
+	if (!nAircraft.empty())
+	{
+		for (iter = nAircraft.begin(); iter != nAircraft.end();)
+		{
+			(*iter)->Update();
+
+			/*if ((*iter)->done)
+			{
+				bool shouldSelect = (*iter)->getSelected();
+				if (shouldSelect)
+					breakaway();
+				delete(*iter);
+				nAircraft.erase(iter++);
+				if (iter != nAircraft.end() && shouldSelect)
+				{
+					(*iter)->select();
+				}
+			}
+			else
+			{*/
+				iter++;
+			//}
+		}
+	}
+
+	//CAMERA
+	if (nKeys[LSHIFT])
+	{
+		if ((nKeys[RIGHT] && nKeys[LEFT]) || (!nKeys[RIGHT] && !nKeys[LEFT]))
+		{
+		}
+		else if (nKeys[RIGHT])
+		{
+			sCamera.fX += 30.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+		else if (nKeys[LEFT])
+		{
+			sCamera.fX -= 30.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+
+		if ((nKeys[UP] && nKeys[DOWN]) || (!nKeys[UP] && !nKeys[DOWN]))
+		{
+		}
+		else if (nKeys[UP])
+		{
+			sCamera.fY -= 30.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+		else if (nKeys[DOWN])
+		{
+			sCamera.fY += 30.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+	}
+	else
+	{
+		if ((nKeys[RIGHT] && nKeys[LEFT]) || (!nKeys[RIGHT] && !nKeys[LEFT]))
+		{
+		}
+		else if (nKeys[RIGHT])
+		{
+			sCamera.fX += 10.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+		else if (nKeys[LEFT])
+		{
+			sCamera.fX -= 10.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+
+		if ((nKeys[UP] && nKeys[DOWN]) || (!nKeys[UP] && !nKeys[DOWN]))
+		{
+		}
+		else if (nKeys[UP])
+		{
+			sCamera.fY -= 10.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+		else if (nKeys[DOWN])
+		{
+			sCamera.fY += 10.0f * (sCamera.fZ + 1);
+			//breakaway();
+		}
+	}
+
+	al_identity_transform(&aTransform);
+	al_scale_transform(&aTransform, 1.0f / (sCamera.fZ + 1.0f), 1.0f / (sCamera.fZ + 1.0f));
+	al_translate_transform(&aTransform, iOffsetW - sCamera.fX / (sCamera.fZ + 1.0f), iOffsetH - sCamera.fY / (sCamera.fZ + 1.0f));
+	mBackground->Update(iDisplayW, iDisplayH, iOffsetW, iOffsetH, &sCamera);
+}
+
 void Main::Render()
 {
 	ALLEGRO_BITMAP* aBack = al_get_target_bitmap();
@@ -135,6 +256,15 @@ void Main::Render()
 
 	mBackground->Render();
 	//al_draw_circle(sCamera.fX, sCamera.fY, 10, al_map_rgb(255,0,255), 10);
+
+	//AIRCRAFT
+	if (!nAircraft.empty())
+	{
+		for (iter = nAircraft.begin(); iter != nAircraft.end(); iter++)
+		{
+			(*iter)->Render();
+		}
+	}
 
 	al_set_target_bitmap(aBack);
 	al_draw_bitmap(aScreen, 0, 0, 0);

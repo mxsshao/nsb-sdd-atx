@@ -51,6 +51,36 @@ namespace Simulator
 			float fY;
 			float fZ;
 		};
+		struct Waypoint
+		{
+			Waypoint() {};
+			Waypoint(float pX, float pY, float pZ) {fX = pX; fY = pY; fZ = pZ;};
+			inline friend bool operator==(const Waypoint& lhs, const Waypoint& rhs) {if (lhs.fX == rhs.fX && lhs.fY == rhs.fY && lhs.fZ == rhs.fZ) {return true;} else {return false;} }
+			inline friend bool operator!=(const Waypoint& lhs, const Waypoint& rhs) {return !operator==(lhs,rhs);}
+			float fX;
+			float fY;
+			float fZ;
+			std::list<int> nConnected;
+		};
+	};
+
+	static double ArcTan(float x, float y)
+	{
+		if (x <= 0 && y >= 0)
+			return abs(atan(x/y));
+		else if (x <= 0 && y <= 0)
+			return ALLEGRO_PI - abs(atan(x/y));
+		else if (x >= 0 && y <= 0)
+			return ALLEGRO_PI + abs(atan(x/y));
+		else if (x >= 0 && y >= 0)
+			return ALLEGRO_PI*2 - abs(atan(x/y));
+		else
+			return 0;
+	};
+
+	static double CalculateHeading(Structs::Waypoint alpha, Structs::Waypoint beta)
+	{
+		return ArcTan(alpha.fX - beta.fX, alpha.fY - beta.fY) * 180.0f / ALLEGRO_PI;
 	};
 };
 };

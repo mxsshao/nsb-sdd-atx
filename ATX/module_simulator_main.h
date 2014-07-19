@@ -3,6 +3,7 @@
 #include "global.h"
 #include "manager.h"
 #include "module_simulator_background.h"
+#include "module_simulator_aircraft.h"
 
 namespace Module
 {
@@ -12,6 +13,8 @@ namespace Simulator
 	{
 	private:
 		Background* mBackground;
+		std::list<Aircraft*> nAircraft;
+		std::list<Aircraft*>::iterator iter;
 
 		ALLEGRO_BITMAP* aScreen;
 
@@ -30,10 +33,13 @@ namespace Simulator
 	public:
 		Main();
 
+		Structs::Waypoint nWaypoints[20];
+
 		void Load();
 		void Initialize();
 		void Resize();
 		void HandleEvents(ALLEGRO_EVENT &ev);
+		void Update();
 		void Render();
 		void Cleanup();
 	};
