@@ -7,7 +7,7 @@ void Manager::InitializeGwen()
 	gRenderer = new Gwen::Renderer::Allegro();
 	gDefaultSkin = new Gwen::Skin::TexturedBase(gRenderer);
 	gDefaultSkin->SetRender(gRenderer);
-	gDefaultSkin->Init("Resources/defaultskin2.png");
+	gDefaultSkin->Init("Resources/defaultskin.png");
 	gDefaultSkin->SetDefaultFont(L"Resources/OpenSans.ttf", 14);
 	gCanvas = new Gwen::Controls::Canvas(gDefaultSkin);
 	gCanvas->SetSize(al_get_display_width(aDisplay), al_get_display_height(aDisplay));

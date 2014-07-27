@@ -8,10 +8,10 @@ void Interface::Load()
 	winFlights = new Gwen::Controls::WindowControl(gBase);
 	winFlights->MakeScroll();
 	winFlights->GetScroll()->SetScroll(false, true);
-	//winFlights->GetScroll()->onResize.Add(this, &Module::Simulator::Interface::WinFlightsResize);
+	winFlights->GetScroll()->onResize.Add(this, &Module::Simulator::Interface::WinFlightsResize);
 	winFlights->SetTitle(L"Flight Information");
 	winFlights->SetMinimumSize(Gwen::Point(200,200));
-	//winFlights->onResize.Add(this, &Module::Simulator::Interface::WinFlightsResize);
+	winFlights->onResize.Add(this, &Module::Simulator::Interface::WinFlightsResize);
 
 	winTest = new Gwen::Controls::WindowControl(gBase);
 	winTest->SetTitle(L"Test Control");
@@ -80,7 +80,7 @@ void Interface::WinFlightsResize()
 	{
 		for (iter = mMain->nAircraft.begin(); iter != mMain->nAircraft.end(); iter++)
 		{
-			//(*iter)->Resize();
+			(*iter)->Resize();
 		}
 	}
 }

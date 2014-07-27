@@ -41,6 +41,8 @@ namespace Simulator
 	public:
 		Interface(Gwen::Controls::Base* pBase, Main* pMain) {gBase = pBase; mMain = pMain;};
 
+		Gwen::Controls::WindowControl* GetWinFlights() {return winFlights;};
+
 		void Load();
 		void Resize();
 		void Render();

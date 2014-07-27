@@ -1,9 +1,13 @@
 #include "module_simulator_aircraft.h"
 #include "module_simulator_main.h"
+#include "module_simulator_interface.h"
 
 using namespace Module::Simulator;
 
 Main* Aircraft::mMain;
+ALLEGRO_BITMAP* Aircraft::aButtonImage;
+ALLEGRO_FONT* Aircraft::nFonts[2];
+Gwen::Controls::Base* Aircraft::gParent;
 
 Aircraft::Aircraft(float pX, float pY, float pZ, int pStart, double pSpeed, double pHeading, int pDestination, std::string pType)
 {
@@ -29,6 +33,15 @@ Aircraft::Aircraft(float pX, float pY, float pZ, int pStart, double pSpeed, doub
 	std::list<int> nDestination;
 	nDestination.push_front(pDestination);
 	Navigate(&nDestination);
+
+	aButtonRender = al_create_bitmap(505, 66);
+	btnAircraft = new Gwen::Controls::Button(gParent);
+	btnAircraft->Dock(Gwen::Pos::Top);
+	btnAircraft->SetShouldDrawBackground(false);
+	btnAircraft->SetImage(aButtonRender);
+	btnAircraft->SetPadding(Gwen::Padding());
+	btnAircraft->SetMargin(Gwen::Margin());
+	btnAircraft->onPress.Add(this, &Module::Simulator::Aircraft::Select);
 }
 
 Aircraft::~Aircraft()
@@ -36,9 +49,13 @@ Aircraft::~Aircraft()
 	al_destroy_bitmap(aImage);
 }
 
-void Aircraft::Load(Main* pMain)
+void Aircraft::Load(Main* pMain, Gwen::Controls::Base* pParent)
 {
 	mMain = pMain;
+	gParent = pParent;
+	aButtonImage = al_load_bitmap("Resources/FIDS.png");
+	nFonts[0] = al_load_font("Resources/OpenSans.ttf", 12, 0);
+	nFonts[1] = al_load_font("Resources/OpenSans.ttf", 16, 0);
 }
 
 void Aircraft::Navigate(std::list<int>* nDestination)
@@ -88,8 +105,44 @@ void Aircraft::Navigate(std::list<int>* nDestination)
 	}
 }
 
+void Aircraft::Resize()
+{
+	btnAircraft->SetSize(btnAircraft->GetActualParent()->GetBounds().w, btnAircraft->GetActualParent()->GetBounds().w / 505.0f * 66.0f);
+}
+
+void Aircraft::Select()
+{
+	mMain->ResetSelected();
+	mMain->GetCamera()->mFollowing = this;
+	mMain->GetCamera()->fZ = fZ;
+	bIsSelected = true;
+}
+
 void Aircraft::Update()
 {
+	//FLIP DISPLAY
+	if (bIsSelected)
+	{
+		if (fFlipCount > -1.0f)
+		{
+			fFlipCount -= 0.1f;
+		}
+	}
+	else
+	{
+		if (fFlipCount < 1.0f)
+		{
+			fFlipCount += 0.1f;
+		}
+	}
+
+	//BAR
+	/*fOffset += 0.8f;
+	if (fOffset >= 64.0f)
+	{
+		fOffset = 0.0f;
+	}*/
+
 	//CHECK POINTS
 	if (!nPoints.empty())
 	{
@@ -160,6 +213,39 @@ void Aircraft::Update()
 
 void Aircraft::Render()
 {
+	ALLEGRO_BITMAP* aBack = al_get_target_bitmap();
+
+	al_set_target_bitmap(aButtonRender);
+	al_clear_to_color(al_map_rgba(0,0,0,0));
+
+	al_hold_bitmap_drawing(true);
+
+	if (fFlipCount >= 0.0f)
+	{
+		al_identity_transform(&aTransform);
+		al_scale_transform(&aTransform, 1.0f, fFlipCount);
+		al_translate_transform(&aTransform, 0.0f, 40 * (1 - fFlipCount));
+		al_use_transform(&aTransform);
+
+		al_draw_bitmap_region(aButtonImage, 0, 0, 505, 66, 0, 0, 0);
+		al_draw_bitmap_region(aButtonImage, 0, 256, 78, 14, 129, 25, 0);
+
+		al_draw_text(nFonts[0], al_map_rgb(255,255,255), 5, 41, ALLEGRO_ALIGN_LEFT, "Boeing 777-200 LR");
+		al_draw_text(nFonts[1], al_map_rgb(255,255,255), 168, 4, ALLEGRO_ALIGN_CENTER, "DL 716");
+	}
+	else
+	{
+		al_identity_transform(&aTransform);
+		al_scale_transform(&aTransform, 1.0f, -fFlipCount);
+		al_translate_transform(&aTransform, 0.0f, 40 * (1 + fFlipCount));
+		al_use_transform(&aTransform);
+
+		al_draw_bitmap_region(aButtonImage, 0, 128, 505, 66, 0, 0, 0);
+	}
+
+	al_hold_bitmap_drawing(false);
+	al_set_target_bitmap(aBack);
+
 	//AIRCRAFT
 	if (bGround)
 	{

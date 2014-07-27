@@ -42,14 +42,16 @@ namespace Module
 {
 namespace Simulator
 {
+	class Aircraft;
 	namespace Structs
 	{
 		struct Camera
 		{
-			Camera() {fX = 0.0f; fY = 0.0f; fZ = 0.0f;};
+			Camera() {fX = 0.0f; fY = 0.0f; fZ = 0.0f; mFollowing = NULL;};
 			float fX;
 			float fY;
 			float fZ;
+			Aircraft* mFollowing;
 		};
 		struct Waypoint
 		{

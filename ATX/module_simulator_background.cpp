@@ -30,6 +30,10 @@ void Background::Load()
 	nImages[4][3] = al_load_bitmap("Resources/bg.png");
 	nImages[4][4] = al_load_bitmap("Resources/bg.png");
 
+	iStartX = 0;
+	iStartY = 0;
+	iEndX = 1;
+	iEndY = 1;
 }
 
 void Background::Update(int iDisplayW, int iDisplayH, int iOffsetW, int iOffsetH, Structs::Camera* sCamera)

@@ -7,11 +7,17 @@ namespace Module
 namespace Simulator
 {
 	class Main;
-	class Aircraft
+	class Aircraft : public Gwen::Event::Handler
 	{
 	private:
 		static Main* mMain;
+		static ALLEGRO_BITMAP* aButtonImage;
+		static ALLEGRO_FONT* nFonts[2];
+		static Gwen::Controls::Base* gParent;
+		ALLEGRO_BITMAP* aButtonRender;
+		Gwen::Controls::Button* btnAircraft;
 
+		ALLEGRO_TRANSFORM aTransform;
 		ALLEGRO_BITMAP* aImage;
 		
 		int iState;
@@ -39,7 +45,13 @@ namespace Simulator
 		float GetX() {return fX;};
 		float GetY() {return fY;};
 
-		static void Load(Main* pMain);
+		void Select();
+		bool GetSelected() {return bIsSelected;};
+		void SetSelected(bool pSelected) {bIsSelected = pSelected;};
+
+		void Resize();
+
+		static void Load(Main* pMain, Gwen::Controls::Base* pParent);
 		void Navigate(std::list<int>* destination);
 		void Update();
 		void Render();

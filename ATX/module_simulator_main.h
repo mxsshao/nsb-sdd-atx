@@ -37,6 +37,10 @@ namespace Simulator
 		int iOffsetW;
 		int iOffsetH;
 
+		void ResetSelected();
+		void Breakaway();
+		Structs::Camera* GetCamera() {return &sCamera;};
+
 		void Load();
 		void Initialize();
 		void Resize();
