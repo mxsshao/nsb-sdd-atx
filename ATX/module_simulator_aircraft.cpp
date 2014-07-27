@@ -106,10 +106,6 @@ void Aircraft::Update()
 			}
 		}
 	}
-	else
-	{
-		//bDone = true;
-	}
 
 	//AIRCRAFT UPDATE
 	if (fCurrentHeading != fFinalHeading)

@@ -5,11 +5,13 @@ using namespace Module::Simulator;
 Main::Main()
 {
 	mBackground = new Background();
+	mInterface = new Interface(Manager::GetInstance()->gBase, this);
 }
 
 void Main::Load()
 {
 	mBackground->Load();
+	mInterface->Load();
 	Aircraft::Load(this);
 
 	nWaypoints[0] = Structs::Waypoint(100,100,0);
@@ -41,6 +43,12 @@ void Main::Initialize()
 	nAircraft.push_back(new Aircraft(0, 0, 0, 0, 0.4f, 120.0f, 4, "TG3802"));
 	bRightClick = false;
 
+	nKeys[UP] = false;
+	nKeys[DOWN] = false;
+	nKeys[LEFT] = false;
+	nKeys[RIGHT] = false;
+	nKeys[LSHIFT] = false;
+
 	Resize();
 }
 void Main::Resize()
@@ -55,20 +63,14 @@ void Main::Resize()
 		al_destroy_bitmap(aScreen);
 	};
 	aScreen = al_create_bitmap(iDisplayW, iDisplayH);
+
+	mInterface->Resize();
 }
 void Main::HandleEvents(ALLEGRO_EVENT &ev)
 {
 	if (ev.type == ALLEGRO_EVENT_TIMER)
 	{
 		Update();
-		/*al_identity_transform(&aTransform);
-		al_scale_transform(&aTransform, 1.0f / (sCamera.fZ + 1.0f), 1.0f / (sCamera.fZ + 1.0f));
-		al_translate_transform(&aTransform, iOffsetW - sCamera.fX / (sCamera.fZ + 1.0f), iOffsetH - sCamera.fY / (sCamera.fZ + 1.0f));
-
-		mBackground->Update(iDisplayW, iDisplayH, iOffsetW, iOffsetH, &sCamera);*/
-		//update();
-		//std::cout << label->Height() << std::endl;
-		//std::cout << label->m_Text->Height() << std::endl;
 	}
 	else if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 	{
@@ -255,7 +257,6 @@ void Main::Render()
 	al_use_transform(&aTransform);
 
 	mBackground->Render();
-	//al_draw_circle(sCamera.fX, sCamera.fY, 10, al_map_rgb(255,0,255), 10);
 
 	//AIRCRAFT
 	if (!nAircraft.empty())
@@ -268,10 +269,14 @@ void Main::Render()
 
 	al_set_target_bitmap(aBack);
 	al_draw_bitmap(aScreen, 0, 0, 0);
+
+	mInterface->Render();
 }
 void Main::Cleanup()
 {
 	mBackground->Cleanup();
+	mInterface->Cleanup();
 	delete mBackground;
+	delete mInterface;
 	al_destroy_bitmap(aScreen);
 }

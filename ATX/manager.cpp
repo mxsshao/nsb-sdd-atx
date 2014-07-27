@@ -17,6 +17,7 @@ void Manager::InitializeGwen()
 	gBase->SetPos(0,0);
 	gBase->SetSize(al_get_display_width(aDisplay), al_get_display_height(aDisplay));
 	gBase->SetCursor(Gwen::CursorType::Normal);
+	gBase->SetKeyboardInputEnabled(false);
 
 	gInput = new Gwen::Input::Allegro();
 	gInput->Initialize(gCanvas);

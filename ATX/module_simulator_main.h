@@ -4,6 +4,7 @@
 #include "manager.h"
 #include "module_simulator_background.h"
 #include "module_simulator_aircraft.h"
+#include "module_simulator_interface.h"
 
 namespace Module
 {
@@ -13,7 +14,7 @@ namespace Simulator
 	{
 	private:
 		Background* mBackground;
-		std::list<Aircraft*> nAircraft;
+		Interface* mInterface;
 		std::list<Aircraft*>::iterator iter;
 
 		ALLEGRO_BITMAP* aScreen;
@@ -22,18 +23,19 @@ namespace Simulator
 		enum nKeys {UP, DOWN, LEFT, RIGHT, LSHIFT};
 		bool bRightClick;
 
-		int iDisplayW;
-		int iDisplayH;
-		int iOffsetW;
-		int iOffsetH;
-
 		Structs::Camera sCamera;
 		ALLEGRO_TRANSFORM aTransform;
 
 	public:
 		Main();
 
+		std::list<Aircraft*> nAircraft;
 		Structs::Waypoint nWaypoints[20];
+
+		int iDisplayW;
+		int iDisplayH;
+		int iOffsetW;
+		int iOffsetH;
 
 		void Load();
 		void Initialize();

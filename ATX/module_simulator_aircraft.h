@@ -36,6 +36,9 @@ namespace Simulator
 		Aircraft(float pX, float pY, float pZ, int pStart, double pSpeed, double pHeading, int pDestination, std::string pType);
 		~Aircraft();
 
+		float GetX() {return fX;};
+		float GetY() {return fY;};
+
 		static void Load(Main* pMain);
 		void Navigate(std::list<int>* destination);
 		void Update();
