@@ -85,6 +85,15 @@ void Interface::WinFlightsResize()
 	}
 }
 
+void Interface::BtnOneClick()
+{
+	if (mMain->nAircraft.size() < 148)
+	{
+		mMain->nAircraft.push_back(new Aircraft(1000, 1000, 0, 3, 0.5f, 90.0f, 2, "MU330"));
+		mMain->nAircraft.back()->Select();
+	}
+}
+
 void Interface::Render()
 {
 	ALLEGRO_BITMAP* aBack = al_get_target_bitmap();

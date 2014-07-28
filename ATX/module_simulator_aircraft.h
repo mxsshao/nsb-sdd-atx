@@ -17,6 +17,8 @@ namespace Simulator
 		ALLEGRO_BITMAP* aButtonRender;
 		Gwen::Controls::Button* btnAircraft;
 
+		Gwen::Controls::Button* btnOne;
+
 		ALLEGRO_TRANSFORM aTransform;
 		ALLEGRO_BITMAP* aImage;
 		
@@ -46,6 +48,7 @@ namespace Simulator
 		float GetY() {return fY;};
 
 		void Select();
+		void Deselect();
 		bool GetSelected() {return bIsSelected;};
 		void SetSelected(bool pSelected) {bIsSelected = pSelected;};
 

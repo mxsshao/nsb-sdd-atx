@@ -75,7 +75,7 @@ void Main::ResetSelected()
 		{
 			if ((*iter)->GetSelected())
 			{
-				(*iter)->SetSelected(false);
+				(*iter)->Deselect();
 			}
 		}
 	}

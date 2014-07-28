@@ -21,7 +21,7 @@ namespace Simulator
 		Gwen::Controls::Button* btnMenu;
 		void BtnMenuClick() {};
 		Gwen::Controls::Button* btnOne;
-		void BtnOneClick() {};
+		void BtnOneClick();
 		Gwen::Controls::Button* btnTwo;
 		Gwen::Controls::Button* btnThree;
 		void BtnThreeClick() {winFlights->Show();};

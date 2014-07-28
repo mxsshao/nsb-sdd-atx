@@ -39,14 +39,20 @@ Aircraft::Aircraft(float pX, float pY, float pZ, int pStart, double pSpeed, doub
 	btnAircraft->Dock(Gwen::Pos::Top);
 	btnAircraft->SetShouldDrawBackground(false);
 	btnAircraft->SetImage(aButtonRender);
-	btnAircraft->SetPadding(Gwen::Padding());
-	btnAircraft->SetMargin(Gwen::Margin());
+	btnAircraft->SetPadding(0);
+	btnAircraft->SetMargin(0);
 	btnAircraft->onPress.Add(this, &Module::Simulator::Aircraft::Select);
+
+	btnOne = new Gwen::Controls::Button(btnAircraft);
+	btnOne->SetText(L"Derp");
+	btnOne->Hide();
 }
 
 Aircraft::~Aircraft()
 {
 	al_destroy_bitmap(aImage);
+	al_destroy_bitmap(aButtonImage);
+	btnAircraft->DelayedDelete();
 }
 
 void Aircraft::Load(Main* pMain, Gwen::Controls::Base* pParent)
@@ -108,6 +114,7 @@ void Aircraft::Navigate(std::list<int>* nDestination)
 void Aircraft::Resize()
 {
 	btnAircraft->SetSize(btnAircraft->GetActualParent()->GetBounds().w, btnAircraft->GetActualParent()->GetBounds().w / 505.0f * 66.0f);
+	btnOne->SetBounds(16.0f * btnAircraft->GetActualParent()->GetBounds().w / 505.0f, 24.0f * btnAircraft->GetActualParent()->GetBounds().w / 505.0f, 98.0f * btnAircraft->GetActualParent()->GetBounds().w / 505.0f, 34.0f * btnAircraft->GetActualParent()->GetBounds().w / 505.0f);
 }
 
 void Aircraft::Select()
@@ -118,6 +125,13 @@ void Aircraft::Select()
 	bIsSelected = true;
 }
 
+void Aircraft::Deselect()
+{
+	bIsSelected = false;
+	btnOne->Hide();
+}
+
+
 void Aircraft::Update()
 {
 	//FLIP DISPLAY
@@ -126,6 +140,10 @@ void Aircraft::Update()
 		if (fFlipCount > -1.0f)
 		{
 			fFlipCount -= 0.1f;
+		}
+		if (fFlipCount < -0.7f && btnOne->Hidden())
+		{
+			btnOne->Show();
 		}
 	}
 	else
