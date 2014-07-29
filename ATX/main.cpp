@@ -1,6 +1,7 @@
 #include "global.h"
 #include "manager.h"
 #include "module_simulator_main.h"
+#include "module_scenario_main.h"
 
 int main(int argc, char **argv)
 {
@@ -75,7 +76,8 @@ int main(int argc, char **argv)
 
 	al_start_timer(aTimer);
 
-	mManager->ChangeModule(new Module::Simulator::Main());
+	//mManager->ChangeModule(new Module::Simulator::Main());
+	mManager->ChangeModule(new Module::Scenario::Main());
 
 	//EVENT LOOP
 	while (!mManager->bDone)

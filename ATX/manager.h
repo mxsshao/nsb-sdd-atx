@@ -10,6 +10,9 @@ protected:
 
 private:
 	static Manager mManager;
+
+	Module::Base* mPrevious;
+
 	Gwen::Renderer::Allegro* gRenderer;
 	Gwen::Skin::TexturedBase* gDefaultSkin;
 	Gwen::Controls::Canvas* gCanvas;

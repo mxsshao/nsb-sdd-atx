@@ -28,7 +28,7 @@ void Manager::ChangeModule(Module::Base* pModule)
 	if (!nModules.empty())
 	{
 		nModules.back()->Cleanup();
-		delete nModules.back();
+		mPrevious = nModules.back();
 		nModules.pop_back();
 	}
 
@@ -64,6 +64,11 @@ void Manager::HandleEvents(ALLEGRO_EVENT &ev)
 		if(!nModules.empty())
 		{
 			nModules.back()->HandleEvents(ev);
+		}
+		if(mPrevious)
+		{
+			delete mPrevious;
+			mPrevious = NULL;
 		}
 	}
 }
