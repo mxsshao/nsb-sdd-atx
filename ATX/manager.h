@@ -18,6 +18,12 @@ private:
 	Gwen::Controls::Canvas* gCanvas;
 	Gwen::Input::Allegro* gInput;
 
+	ALLEGRO_MUTEX* aMutex;
+	ALLEGRO_COND* aCond;
+	bool bReady;
+	ALLEGRO_THREAD* aThread;
+	static void* Thread(ALLEGRO_THREAD* aThread, void* arg);
+
 public:
 	static Manager* GetInstance() {return &mManager;};
 
@@ -27,6 +33,12 @@ public:
 	ALLEGRO_EVENT_QUEUE* aEventQueue;
 
 	Gwen::Controls::Base* gBase;
+
+	ALLEGRO_BITMAP* aLoadBackground;
+	ALLEGRO_BITMAP* aLoadAnimation;
+	ALLEGRO_MUTEX* GetMutex() {return aMutex;};
+	ALLEGRO_COND* GetCond() {return aCond;};
+	void SetReady(bool pReady) {bReady = pReady;};
 
 	void InitializeGwen();
 	void ChangeModule(Module::Base* pModule);

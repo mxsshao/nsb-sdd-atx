@@ -16,8 +16,8 @@ void Main::Load()
 
 	nWaypoints[0] = Structs::Waypoint(100,100,0);
 	nWaypoints[1] = Structs::Waypoint(200,200,0);
-	nWaypoints[2] = Structs::Waypoint(300,300,0);
-	nWaypoints[3] = Structs::Waypoint(1000,600,0);
+	nWaypoints[2] = Structs::Waypoint(300,300,5);
+	nWaypoints[3] = Structs::Waypoint(1000,600,10);
 	nWaypoints[4] = Structs::Waypoint(1000,300,0);
 
 	nWaypoints[0].nConnected.push_back(1);
@@ -34,13 +34,24 @@ void Main::Load()
 	//nWaypoints[4].nConnected.push_back(1);
 	nWaypoints[4].nConnected.push_back(2);
 	nWaypoints[4].nConnected.push_back(3);
+
+	nAircraft.push_back(new Aircraft(0, 0, 0, 0, 0.4f, 120.0f, 4, "TG3802"));
+
+	ALLEGRO_BITMAP* aTemp;
+	int iter;
+	for (iter = 0; iter < 100; iter++)
+	{
+		aTemp = al_load_bitmap("Resources/scenario1.png");
+		al_destroy_bitmap(aTemp);
+	}
 }
 
 void Main::Initialize()
 {
 	std::cout << "MODULE		-Simulation" << std::endl;
 
-	nAircraft.push_back(new Aircraft(0, 0, 0, 0, 0.4f, 120.0f, 4, "TG3802"));
+	aScreen = NULL;
+
 	bRightClick = false;
 
 	nKeys[UP] = false;
@@ -48,6 +59,10 @@ void Main::Initialize()
 	nKeys[LEFT] = false;
 	nKeys[RIGHT] = false;
 	nKeys[LSHIFT] = false;
+
+	al_identity_transform(&aTransform);
+	al_scale_transform(&aTransform, 1.0f / (sCamera.fZ + 1.0f), 1.0f / (sCamera.fZ + 1.0f));
+	al_translate_transform(&aTransform, iOffsetW - sCamera.fX / (sCamera.fZ + 1.0f), iOffsetH - sCamera.fY / (sCamera.fZ + 1.0f));
 
 	Resize();
 }
@@ -80,6 +95,7 @@ void Main::ResetSelected()
 		}
 	}
 	sCamera.mFollowing = NULL;
+	sCamera.bFollowZ = false;
 }
 
 void Main::Breakaway()
@@ -88,7 +104,12 @@ void Main::Breakaway()
 	{
 		sCamera.fX = sCamera.mFollowing->GetX();
 		sCamera.fY = sCamera.mFollowing->GetY();
+		if (sCamera.bFollowZ)
+		{
+			sCamera.fZ = sCamera.mFollowing->GetZ();
+		}
 		sCamera.mFollowing = NULL;
+		sCamera.bFollowZ = false;
 	}
 }
 
@@ -162,17 +183,22 @@ void Main::HandleEvents(ALLEGRO_EVENT &ev)
 	{
 		if (ev.mouse.dz != 0 && mManager->gBase->IsHovered())
 		{
-			sCamera.fZ -= ev.mouse.dz / 3.0f;
+			sCamera.fZ -= ev.mouse.dz * 3.0f;
 
 			if (sCamera.fZ < 0)
 			{
 				sCamera.fZ = 0;
 			}
+
+			if (sCamera.mFollowing && sCamera.bFollowZ)
+			{
+				sCamera.bFollowZ = false;
+			}
 		}
 		if (bRightClick && mManager->gBase->IsHovered())
 		{
-			sCamera.fX -= ev.mouse.dx * (sCamera.fZ + 1.0);
-			sCamera.fY -= ev.mouse.dy * (sCamera.fZ + 1.0);
+			sCamera.fX -= ev.mouse.dx * (sCamera.fZ / 10.0f + 1.0);
+			sCamera.fY -= ev.mouse.dy * (sCamera.fZ / 10.0f + 1.0);
 			Breakaway();
 		}
 	}
@@ -214,12 +240,12 @@ void Main::Update()
 		}
 		else if (nKeys[RIGHT])
 		{
-			sCamera.fX += 30.0f * (sCamera.fZ + 1);
+			sCamera.fX += 30.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 		else if (nKeys[LEFT])
 		{
-			sCamera.fX -= 30.0f * (sCamera.fZ + 1);
+			sCamera.fX -= 30.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 
@@ -228,12 +254,12 @@ void Main::Update()
 		}
 		else if (nKeys[UP])
 		{
-			sCamera.fY -= 30.0f * (sCamera.fZ + 1);
+			sCamera.fY -= 30.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 		else if (nKeys[DOWN])
 		{
-			sCamera.fY += 30.0f * (sCamera.fZ + 1);
+			sCamera.fY += 30.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 	}
@@ -244,12 +270,12 @@ void Main::Update()
 		}
 		else if (nKeys[RIGHT])
 		{
-			sCamera.fX += 10.0f * (sCamera.fZ + 1);
+			sCamera.fX += 10.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 		else if (nKeys[LEFT])
 		{
-			sCamera.fX -= 10.0f * (sCamera.fZ + 1);
+			sCamera.fX -= 10.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 
@@ -258,27 +284,36 @@ void Main::Update()
 		}
 		else if (nKeys[UP])
 		{
-			sCamera.fY -= 10.0f * (sCamera.fZ + 1);
+			sCamera.fY -= 10.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 		else if (nKeys[DOWN])
 		{
-			sCamera.fY += 10.0f * (sCamera.fZ + 1);
+			sCamera.fY += 10.0f * (sCamera.fZ / 10.0f + 1);
 			Breakaway();
 		}
 	}
 
 	if (sCamera.mFollowing)
 	{
-		al_identity_transform(&aTransform);
-		al_scale_transform(&aTransform, 1.0f / (sCamera.fZ + 1.0f), 1.0f / (sCamera.fZ + 1.0f));
-		al_translate_transform(&aTransform, iOffsetW - sCamera.mFollowing->GetX() / (sCamera.fZ + 1.0f), iOffsetH - sCamera.mFollowing->GetY() / (sCamera.fZ + 1.0f));
+		if (sCamera.bFollowZ)
+		{
+			al_identity_transform(&aTransform);
+			al_scale_transform(&aTransform, 1.0f / (sCamera.mFollowing->GetZ() / 10.0f + 1.0f), 1.0f / (sCamera.mFollowing->GetZ() / 10.0f + 1.0f));
+			al_translate_transform(&aTransform, iOffsetW - sCamera.mFollowing->GetX() / (sCamera.mFollowing->GetZ() / 10.0f + 1.0f), iOffsetH - sCamera.mFollowing->GetY() / (sCamera.mFollowing->GetZ() / 10.0f + 1.0f));
+		}
+		else
+		{
+			al_identity_transform(&aTransform);
+			al_scale_transform(&aTransform, 1.0f / (sCamera.fZ / 10.0f + 1.0f), 1.0f / (sCamera.fZ / 10.0f + 1.0f));
+			al_translate_transform(&aTransform, iOffsetW - sCamera.mFollowing->GetX() / (sCamera.fZ / 10.0f + 1.0f), iOffsetH - sCamera.mFollowing->GetY() / (sCamera.fZ / 10.0f + 1.0f));
+		}
 	}
 	else
 	{
 		al_identity_transform(&aTransform);
-		al_scale_transform(&aTransform, 1.0f / (sCamera.fZ + 1.0f), 1.0f / (sCamera.fZ + 1.0f));
-		al_translate_transform(&aTransform, iOffsetW - sCamera.fX / (sCamera.fZ + 1.0f), iOffsetH - sCamera.fY / (sCamera.fZ + 1.0f));
+		al_scale_transform(&aTransform, 1.0f / (sCamera.fZ / 10.0f + 1.0f), 1.0f / (sCamera.fZ / 10.0f + 1.0f));
+		al_translate_transform(&aTransform, iOffsetW - sCamera.fX / (sCamera.fZ / 10.0f + 1.0f), iOffsetH - sCamera.fY / (sCamera.fZ / 10.0f + 1.0f));
 	}
 
 	mBackground->Update(iDisplayW, iDisplayH, iOffsetW, iOffsetH, &sCamera);

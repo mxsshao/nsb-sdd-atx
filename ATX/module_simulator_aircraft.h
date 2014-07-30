@@ -46,6 +46,7 @@ namespace Simulator
 
 		float GetX() {return fX;};
 		float GetY() {return fY;};
+		float GetZ() {return fZ;};
 
 		void Select();
 		void Deselect();

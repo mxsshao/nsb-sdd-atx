@@ -13,6 +13,7 @@ Aircraft::Aircraft(float pX, float pY, float pZ, int pStart, double pSpeed, doub
 {
 	//std::cout << "NEW AIRCRAFT	-x" << ex << " -y" << ey << " -z" << ez << " -s" << start << " -v" << eSpeed << " -h" << eHeading << " -d" << eDestination <<std::endl;
 
+	bGround = false;
 	aImage = al_load_bitmap(std::string("Resources/").append(pType).append(".png").c_str());
 	iState = 15.0f;
 
@@ -121,7 +122,7 @@ void Aircraft::Select()
 {
 	mMain->ResetSelected();
 	mMain->GetCamera()->mFollowing = this;
-	mMain->GetCamera()->fZ = fZ;
+	mMain->GetCamera()->bFollowZ = true;
 	bIsSelected = true;
 }
 
@@ -216,6 +217,7 @@ void Aircraft::Update()
 				iState ++;
 			}
 		}
+
 	}
 
 	if (abs(fCurrentHeading - fFinalHeading) < 0.2f)
@@ -227,6 +229,14 @@ void Aircraft::Update()
 
 	fX += fSpeed * sin(fCurrentHeading / 180.0f * ALLEGRO_PI);
 	fY -= fSpeed * cos(fCurrentHeading / 180.0f * ALLEGRO_PI);
+
+	if (!nPoints.empty())
+	{
+		if (fZ != mMain->nWaypoints[nPoints.front()].fZ)
+		{
+			fZ += (mMain->nWaypoints[nPoints.front()].fZ - fZ) / CalculateHypotenuse(Structs::Waypoint(fX,fY,fZ), mMain->nWaypoints[nPoints.front()]) * fSpeed;
+		}
+	}
 }
 
 void Aircraft::Render()
@@ -273,7 +283,7 @@ void Aircraft::Render()
 	{
 		int iX = 0;
 		int iY = 0;
-		float fScale = 1.0f;
+		float fScale = fZ / 10.0f + 1;
 
 		if (iState <= 14)
 		{

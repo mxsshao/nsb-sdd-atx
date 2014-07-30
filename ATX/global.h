@@ -47,11 +47,12 @@ namespace Simulator
 	{
 		struct Camera
 		{
-			Camera() {fX = 0.0f; fY = 0.0f; fZ = 0.0f; mFollowing = NULL;};
+			Camera() {fX = 0.0f; fY = 0.0f; fZ = 0.0f; mFollowing = NULL; bFollowZ = true;};
 			float fX;
 			float fY;
 			float fZ;
 			Aircraft* mFollowing;
+			bool bFollowZ;
 		};
 		struct Waypoint
 		{
@@ -83,6 +84,11 @@ namespace Simulator
 	static double CalculateHeading(Structs::Waypoint alpha, Structs::Waypoint beta)
 	{
 		return ArcTan(alpha.fX - beta.fX, alpha.fY - beta.fY) * 180.0f / ALLEGRO_PI;
+	};
+
+	static double CalculateHypotenuse(Structs::Waypoint alpha, Structs::Waypoint beta)
+	{
+		return sqrt(((alpha.fX - beta.fX) * (alpha.fX - beta.fX)) + ((alpha.fY - beta.fY) * (alpha.fY - beta.fY)));
 	};
 };
 };

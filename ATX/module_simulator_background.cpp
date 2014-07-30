@@ -38,16 +38,16 @@ void Background::Load()
 
 void Background::Update(int iDisplayW, int iDisplayH, int iOffsetW, int iOffsetH, Structs::Camera* sCamera)
 {
-	iStartX = floor((sCamera->fX - (iOffsetW * (sCamera->fZ + 1.0f))) / 512.0f);
-	iStartY = floor((sCamera->fY - (iOffsetH * (sCamera->fZ + 1.0f))) / 512.0f);
+	iStartX = floor((sCamera->fX - (iOffsetW * (sCamera->fZ / 10.0f + 1.0f))) / 512.0f);
+	iStartY = floor((sCamera->fY - (iOffsetH * (sCamera->fZ / 10.0f + 1.0f))) / 512.0f);
 
 	if (iStartX < 0)
 		iStartX = 0;
 	if (iStartY < 0)
 		iStartY = 0;
 
-	int iWidth = ceil(iDisplayW * (sCamera->fZ + 1.0f) / 512.0f);
-	int iHeight = ceil(iDisplayW * (sCamera->fZ + 1.0f) / 512.0f);
+	int iWidth = ceil(iDisplayW * (sCamera->fZ / 10.0f + 1.0f) / 512.0f);
+	int iHeight = ceil(iDisplayW * (sCamera->fZ / 10.0f + 1.0f) / 512.0f);
 
 	iEndX = iStartX + iWidth;
 	iEndY = iStartY + iHeight;
