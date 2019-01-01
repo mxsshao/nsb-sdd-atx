@@ -1,6 +1,6 @@
 # SDD 2014 - Major Project - ATC Simulator
 
-+ For Software Design and Development HSC Major Project
++ For Software Design and Development HSC major project
 
 ## Concept Images
 
