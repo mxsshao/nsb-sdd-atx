@@ -3,8 +3,9 @@
 + For Software Design and Development HSC Major Project
 
 ## Concept Images
-<img src="nsb-sdd-atx/_concept_screens/main.png" />
-<img src="nsb-sdd-atx/_concept_screens/scenario.png" />
+
+<img src="_concept_screens/main.png" width="500px" />
+<img src="_concept_screens/scenario.png" width="500px" />
 
 ## Dependencies
 
